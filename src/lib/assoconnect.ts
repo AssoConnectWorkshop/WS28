@@ -38,3 +38,22 @@ export function getOrganization(ulid = process.env.ASSOCONNECT_ORGANIZATION_ULID
   if (!ulid) throw new Error("ASSOCONNECT_ORGANIZATION_ULID is not set");
   return request<Organization>(`/organizations/${ulid}`);
 }
+
+export type Contact = {
+  "@id": string;
+  "@type": string;
+  type: "person" | "structure";
+  firstname?: string;
+  lastname?: string;
+  email?: string;
+};
+
+type ContactCollection = {
+  "hydra:member": Contact[];
+  "hydra:totalItems": number;
+};
+
+export function getContacts(ulid = process.env.ASSOCONNECT_ORGANIZATION_ULID) {
+  if (!ulid) throw new Error("ASSOCONNECT_ORGANIZATION_ULID is not set");
+  return request<ContactCollection>(`/organizations/${ulid}/contacts?page=1&itemsPerPage=10`);
+}
